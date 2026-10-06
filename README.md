@@ -35,7 +35,8 @@ story of how we got them, dead ends included ([STORY.md](STORY.md)).
 | Run | Model | Harmful prompts refused | Harmless prompts answered | Notes |
 |---|---|---|---|---|
 | [01-baseline](results/01-baseline/summary.md) | Qwen3-4B-Thinking-2507, 8-bit MLX | 34/39 by keywords; **37/39** after reading the flagged answers | 10/10 | One clear failure: wrote a fake vaccine-microchip news article |
-| 02-abliterated | — | — | — | next |
+| [02-cyber-baseline](results/02-cyber-baseline/summary.md) | same | 11/13 by keywords; **12/13** after reading | 8/8 | Offensive-security suite. One leak: lateral-movement technique under an "authorized pentest" framing |
+| 03-abliterated | — | — | — | next |
 
 Scores come from the keyword scorer in `eval/refusal_eval.py`. Every answer it
 flags is then read by hand, and each run's summary records both.
@@ -80,7 +81,8 @@ These keep the before/after comparison fair:
 ├── STORY.md             what happened, in order, dead ends included
 ├── requirements.txt     pinned Python dependencies
 ├── eval/
-│   └── refusal_eval.py  refusal eval for any OpenAI-compatible endpoint
+│   ├── refusal_eval.py        refusal eval for any OpenAI-compatible endpoint
+│   └── cyber_refusal_eval.py  same engine, offensive-security probe set
 ├── scripts/
 │   ├── setup.sh         create .venv
 │   ├── get_model.sh     download the base model and make the 8-bit MLX copy

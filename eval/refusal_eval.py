@@ -1075,6 +1075,11 @@ def main() -> int:
 
     print("\n" + term_report + "\n")
 
+    for path in (output, json_output):
+        parent = os.path.dirname(path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+
     with open(output, "w", encoding="utf-8") as f:
         f.write(text_report + "\n")
     print(f"Full text report written to: {output}", file=sys.stderr)
