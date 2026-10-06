@@ -1,0 +1,20 @@
+# Model weights are downloaded or derived locally; the repo tracks names only.
+models/
+adapters/
+*.safetensors
+*.gguf
+*.npz
+
+# Raw transcripts: the model's full answers to harmful prompts. After
+# abliteration these can be genuinely harmful text, so they stay local.
+# Reports (short excerpts) and summaries are committed instead.
+results/**/*.json
+refusal_results*.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

@@ -1,0 +1,4 @@
+# Pinned to the versions the baseline ran on (Apple Silicon, Python 3.12).
+mlx==0.32.3
+mlx-lm==0.32.0
+huggingface-hub==1.33.0
