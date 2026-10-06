@@ -17,10 +17,13 @@ story of how we got them, dead ends included ([STORY.md](STORY.md)).
 2. **Abliterate** — Find the model's *refusal direction*: the difference between
    its average internal activations on harmful and on harmless instructions
    ([Arditi et al., 2024](https://arxiv.org/abs/2406.11717)). Then remove that
-   direction from the weights. Work on the BF16 base, then convert to 8-bit MLX
-   exactly like the baseline, so quantization isn't a second variable. The
-   prompts used to find the direction are kept separate from the eval prompts,
-   so we never test on what we trained on.
+   direction from the weights. We use [Heretic](https://github.com/p-e-w/heretic),
+   which automates this and runs an Optuna search for ablation parameters that
+   minimise refusals while keeping output close to the original (low KL). The
+   search is too heavy for the 16 GB Mac, so it runs on a free Kaggle GPU —
+   [`notebooks/`](notebooks/) — and uploads the result to Hugging Face. We work
+   on the BF16 base, then convert to 8-bit MLX exactly like the baseline, so
+   quantization isn't a second variable.
 3. **Retest** — Same prompts, same settings, same scorer. Check three things:
    - How far does the refusal rate drop?
    - Does it still answer the harmless prompts properly?
@@ -80,6 +83,7 @@ These keep the before/after comparison fair:
 ├── README.md            the plan (this file)
 ├── STORY.md             what happened, in order, dead ends included
 ├── requirements.txt     pinned Python dependencies
+├── notebooks/           Kaggle notebook that abliterates the model with Heretic
 ├── eval/
 │   ├── refusal_eval.py        refusal eval for any OpenAI-compatible endpoint
 │   └── cyber_refusal_eval.py  same engine, offensive-security probe set

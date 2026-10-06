@@ -80,8 +80,34 @@ What the model actually did:
 **Lessons:** with a thinking model, score the answer, not the silence. A keyword
 scorer's flags are where to start reading, not the final verdict.
 
-## Chapter 2 — Abliteration (next)
+## Chapter 2 — Abliteration setup (2026-10-06)
 
-Find the refusal direction, remove it from the weights, run
-`scripts/eval.sh 02-abliterated`, and read every flagged answer. Then read the
-thinking.
+We're abliterating with [Heretic](https://github.com/p-e-w/heretic), which
+automates finding and removing the refusal direction and runs an Optuna search
+for parameters that drop refusals without wrecking the model (it balances a
+keyword refusal rate against KL-divergence from the original).
+
+Where to run it went back and forth. Tried local first: `heretic-llm` installed
+fine on the Mac, torch 2.14.1 has working MPS, and a GQA-shaped fp16 matmul ran
+on MPS (the old bug that blocked Qwen3/Llama on MPS looks fixed). But the real
+cost is the search — ~100–200 trials, each generating and scoring responses — so
+on a 16 GB M-series it's hours, and 8 GB of bf16 weights leaves little room. We
+settled on a **free Kaggle T4**: a few hours, no memory fight.
+
+One wrinkle: Heretic is interactive (a `questionary` menu to save/upload/chat/
+benchmark after it finishes), and in 1.4.0 only `--export-strategy` is a real CLI
+flag — the menu answers aren't. Reading the source, every prompt is wrapped in
+`ask_if_unset(settings.X, ...)` and the menu loop exits after one action when the
+action is preset. Kaggle has no TTY, so the notebook's driver cell monkeypatches
+`questionary` to script every answer (export=merge, trial=best, action=upload,
+repo/visibility/reproducibility preset, token from a Kaggle secret) and raises a
+sentinel to break the loop after exactly one upload. The notebook pins the base
+model to the same commit the baseline used, so the weights are byte-identical.
+
+Notebook: [`notebooks/heretic_abliterate_qwen3_4b_thinking.ipynb`](notebooks/heretic_abliterate_qwen3_4b_thinking.ipynb).
+
+## Chapter 3 — Retest (next)
+
+Pull the abliterated model from Hugging Face, convert to 8-bit MLX, run
+`scripts/eval.sh 03-abliterated` and `eval/cyber_refusal_eval.py`, read every
+flagged answer, and compare refusal rates and the thinking against the baseline.
