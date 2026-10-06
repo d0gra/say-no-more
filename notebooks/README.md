@@ -19,14 +19,21 @@ is free.
 3. **Add-ons → Secrets → `HF_TOKEN`** = a Hugging Face token with **write** access.
 4. Run all cells. It uploads to `<your-username>/Qwen3-4B-Thinking-2507-say-no-more`.
 
-### How it stays non-interactive
-Heretic normally shows a `questionary` menu after optimising (save / upload /
-chat / benchmark). Kaggle has no terminal, and in 1.4.0 only `--export-strategy`
-is a real CLI flag — the menu answers are not. So the driver cell monkeypatches
-`questionary` to script every prompt (export=merge, trial=best, action=upload,
-repo/visibility/reproducibility preset, token from the secret) and raises a
-sentinel to break the menu loop after a single upload. If a future Heretic
-version changes its prompt wording, update the `_pick()` matches in that cell.
+### How it stays non-interactive, and why a subprocess
+Heretic's post-run menu is a `questionary` TUI, and in 1.4.0 only
+`--export-strategy` is a real CLI flag. The notebook writes `run_heretic.py`,
+which monkeypatches `questionary` to script every prompt (export=merge,
+trial=best, action=upload, repo/visibility/reproducibility preset, token from
+the environment) and raises a sentinel to stop after one upload. If a future
+Heretic changes its prompt wording, update the `_pick()` matches there.
+
+It runs that script in a **fresh `python` subprocess**, not in the notebook
+kernel. Kaggle preloads numpy; installing Heretic pins a different numpy, so an
+in-kernel import hits a half-swapped numpy (`_slice` / `_blas_supports_fpe`).
+A restart fixes it interactively, but **Save & Run All (Commit)** can't restart.
+The subprocess imports everything cleanly from disk, so the notebook runs the
+same way interactively or headless. The install also pins `numpy>=2.2,<2.3` and
+removes Kaggle's stale `torchao` (peft rejects torchao <0.16 if present).
 
 ### Then, back on the Mac
 ```bash
