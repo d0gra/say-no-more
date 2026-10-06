@@ -17,7 +17,7 @@ is free.
 1. Upload the `.ipynb` to [kaggle.com/code](https://www.kaggle.com/code) (New Notebook → File → Import).
 2. **Accelerator → GPU**, **Internet → On**.
 3. **Add-ons → Secrets → `HF_TOKEN`** = a Hugging Face token with **write** access.
-4. Run all cells. It uploads to `<your-username>/Qwen3-4B-Thinking-2507-heretic`.
+4. Run all cells. It uploads to `<your-username>/Qwen3-4B-Thinking-2507-say-no-more`.
 
 ### How it stays non-interactive
 Heretic normally shows a `questionary` menu after optimising (save / upload /
@@ -30,10 +30,10 @@ version changes its prompt wording, update the `_pick()` matches in that cell.
 
 ### Then, back on the Mac
 ```bash
-.venv/bin/hf download <user>/Qwen3-4B-Thinking-2507-heretic \
-    --local-dir models/Qwen3-4B-Thinking-2507-heretic
-.venv/bin/mlx_lm.convert --hf-path models/Qwen3-4B-Thinking-2507-heretic \
-    --mlx-path models/Qwen3-4B-Thinking-2507-heretic-mlx-8bit -q --q-bits 8
-MODEL=models/Qwen3-4B-Thinking-2507-heretic-mlx-8bit scripts/serve.sh
+.venv/bin/hf download <user>/Qwen3-4B-Thinking-2507-say-no-more \
+    --local-dir models/Qwen3-4B-Thinking-2507-say-no-more
+.venv/bin/mlx_lm.convert --hf-path models/Qwen3-4B-Thinking-2507-say-no-more \
+    --mlx-path models/Qwen3-4B-Thinking-2507-say-no-more-mlx-8bit -q --q-bits 8
+MODEL=models/Qwen3-4B-Thinking-2507-say-no-more-mlx-8bit scripts/serve.sh
 scripts/eval.sh 03-abliterated          # then eval/cyber_refusal_eval.py too
 ```
