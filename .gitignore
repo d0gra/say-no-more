@@ -11,6 +11,9 @@ adapters/
 results/**/*.json
 refusal_results*.json
 
+# Heretic checkpoints (Optuna study journals)
+checkpoints/
+
 # Python
 .venv*/
 __pycache__/

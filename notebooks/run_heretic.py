@@ -17,8 +17,13 @@ import heretic.utils as hutils
 
 _counts = {}
 def _disp(c):
-    return (getattr(c, "title", None) or str(getattr(c, "value", c)))
+    if isinstance(c, str):
+        return c
+    t = getattr(c, "title", None)
+    return t if isinstance(t, str) else str(getattr(c, "value", c))
 def _val(c):
+    if isinstance(c, str):
+        return c
     return getattr(c, "value", c)
 def _find(choices, needle):
     for c in choices:
